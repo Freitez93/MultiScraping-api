@@ -1,7 +1,7 @@
 import axios from "axios";
 import { load } from "cheerio";
 
-import { AnimeInfo } from "../../../models/beta.js";
+import { AnimeInfo } from "../../../models/anime.js";
 import _ from "../../../utils/index.js"
 
 export const GetAnimeInfo = async (req, res) => {

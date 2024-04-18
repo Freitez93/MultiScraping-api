@@ -1,7 +1,7 @@
 import axios from "axios";
 import { load } from "cheerio";
 
-import { AnimeSearch } from "../../../models/beta.js";
+import { AnimeSearch } from "../../../models/anime.js";
 
 export const GetAnimeByFilter = async (req, res) => {
 	const baseUrl = "https://tioanime.com"

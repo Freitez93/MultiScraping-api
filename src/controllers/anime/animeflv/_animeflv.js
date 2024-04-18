@@ -4,7 +4,7 @@ import _ from "../../../utils/index.js"
 /**
  * 
  * @param {*} genero 
- * @returns Genero si es valido de lo contrario undefined
+ * @returns El genero si es valido de lo contrario undefined
  */
 export const isValidGenre = genero => {
     const GenreAnimeFlv = [
@@ -46,9 +46,6 @@ export const isValidStatus = status => {
     };
 
     return StatusAnimeflv[status] || undefined;
-}
-export const getStatusValue = (status) => {
-
 }
 
 export const isValidOrder = (value) => {
