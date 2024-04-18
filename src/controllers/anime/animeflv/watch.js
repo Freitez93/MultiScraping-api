@@ -15,7 +15,7 @@ export const GetEpisodeServers = async (req, res) => {
         const response = await axios.get(`${baseUrl}/ver/${episodeID}`);
         const $ = load(response.data);
 
-        const getLinks = JSON.parse(response.body.match(/var videos = ({.+?);/)?.[1]);
+        const getLinks = JSON.parse(response.data.match(/var videos = ({.+?);/)?.[1]);
         const data = {
 			name: $(".CapiTop").children("h1").text().trim(),
 			url: `/anime/flv/watch/${episodeID}`,
