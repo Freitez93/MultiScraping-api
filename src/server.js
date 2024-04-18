@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
 
-/*
+
 // Importacion de las runas para los mangas
 import readmRouter from "./routes/manga/readm/index.js"
 import mangafreakRouter from "./routes/manga/mangafreak/index.js"
@@ -12,7 +12,7 @@ import mangamonksRouter from "./routes/manga/mangamonks/index.js"
 import animeflvRouter from "./routes/anime/animeflv/index.js"
 import tioanimeRouter from "./routes/anime/tioanime/index.js"
 import zoroRouter from "./routes/anime/zoro/index.js"
-*/
+
 
 config();
 
@@ -34,19 +34,15 @@ app.get("/", (_req, res) => {
     });
 });
 
-/*
 // Rutas para manga
 app.use("/manga/readm", readmRouter);
 app.use("/manga/mangafreak", mangafreakRouter);
 app.use("/manga/mangamonks", mangamonksRouter);
 
-
 // Rutas para anime
 app.use("/anime/flv", animeflvRouter)
 app.use("/anime/zoro", zoroRouter)
 app.use("/anime/tioanime", tioanimeRouter)
-
-*/
 
 /**
  * Starts the server and listens on the specified port.
