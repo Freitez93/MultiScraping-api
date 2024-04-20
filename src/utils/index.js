@@ -1,4 +1,4 @@
-import { unpack } from "unpacker";
+import { detect, unpack } from "unpacker";
 
 const provider = texto => {
     const hosts = {
@@ -7,7 +7,7 @@ const provider = texto => {
         "Hianime": "zoro"
     }
     for (const [key, value] of Object.entries(hosts)) {
-        if (texto.includes(key)){
+        if (texto.includes(key)) {
             return hosts[value]
         }
     }
@@ -26,10 +26,7 @@ export default {
      */
     getEpisodeURL(url) {
         const baseUrl = new URL(url)
-        return url.replace(
-            `https://${baseUrl.hostname}/ver/`,
-            `/anime/${provider(baseUrl.hostname)}/watch/`,
-        );
+        return url.replace(`https://${baseUrl.hostname}/ver/`, `/anime/${provider(baseUrl.hostname)}/watch/`);
     },
     /**
      * Replaces the original URL with the API URL
@@ -76,6 +73,24 @@ export default {
         });
     },
 
+    isLangValid: (lang) => {
+        if (typeof lang === "string") {
+            const isLang = {
+                "sub": "Subtitulado",
+                "lat": "Latino",
+                "es": "Español",
+                "dub": "English"
+            };
+            for (const key of Object.keys(isLang)) {
+                const hasTrue = lang.toLowerCase().includes(key);
+                if (hasTrue) {
+                    return isLang[key];
+                }
+            }
+        }
+        return null; // devolvera el mismo valor si no se encuentra en la array
+    },
+
     /**
      * Arregla los textos con errores de Html
      * @param texto Gintama&#39 ;
@@ -85,7 +100,7 @@ export default {
         const entities = {
             '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"',
             '&#39;': "'", '&#039;': "'", '&ntilde;': "ñ", '&Ntilde;': "Ñ",
-            '&aacute;': "á", '&eacute;': "é", '&iacute;': "í", '&oacute;': "ó", 
+            '&aacute;': "á", '&eacute;': "é", '&iacute;': "í", '&oacute;': "ó",
             '&uacute;': "ú", '&Aacute;': "Á", '&Eacute;': "É", '&Iacute;': "Í",
             '&Oacute;': "Ó", '&Uacute;': "Ú", '&euro;': "€"
         }

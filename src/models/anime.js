@@ -22,8 +22,10 @@ export class AnimeSearch {
     */
     results = []
 
-    constructor() {
-        //
+    constructor(current, hasNext, total) {
+        this.currentPage = current
+        this.hasNextPage = hasNext
+        this.totalPages = total
     }
 
     /** addNavigate ingresa un array con los parametros
@@ -40,11 +42,11 @@ export class AnimeSearch {
 
     /** Resultados de la busqueda de animes ingresados en un array
      * { id, title, url, image, type }
-     * @param id id: Identificador unico en la pagina web
-     * @param title title: Titulo del Anime
-     * @param url url: Direccion url del sitio web original
-     * @param image image: URL de la imagen de portada o cover
-     * @param type type: Tipo de anime eg. TV, Movie, OVA, ONA, Special
+     * @param id: Ruta para ingresar a la info del anime con la API
+     * @param title: Titulo del Anime
+     * @param url: Direccion url del sitio web original
+     * @param image: Direccion url de la imagen de portada o cover
+     * @param type: Tipo de anime eg. TV, Movie, OVA, ONA, Special
     */
     addResults(anime) {
         const fixType = anime?.type !== "" ? anime.type : undefined
@@ -89,6 +91,11 @@ export class AnimeInfo {
      */
     status = undefined
 
+    /** season: Temporada del anime
+     * @param season: "Summer" | "Autumn" | "Winter" | "Spring"
+    */
+    season = undefined
+
     /**releaseDate: Fecha en la que inicio el anime
      * @param releaseDate
      */
@@ -119,7 +126,38 @@ export class AnimeInfo {
      */
     episodes = []
 
-    constructor(){
+    constructor() {
 
+    }
+}
+
+export class AnimeSource {
+    /** Titulo del episodio o anime actual.
+     * @param title
+     */
+    title = undefined
+
+    /** Direccion url del sitio web original 
+     * @param url
+     */
+    url = undefined
+
+    /** Numero del Episodio o anime actual.
+     * @param number
+     */
+    number = undefined
+
+    /** Lista de los servidores o link directo al episodio o anime.
+     * @param sources
+     */
+    sources = []
+
+    add(object) {
+        const subOrDub = _.isLangValid(object?.type) || undefined
+        this.sources.push({
+            server: object?.server,
+            type: subOrDub,
+            url: object.url
+        })
     }
 }

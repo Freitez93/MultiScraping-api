@@ -1,18 +1,18 @@
 import axios from "axios";
 import { load } from "cheerio";
 
-import { rabbitStream, streamTape } from "../../../extractors/index.js";
+import { videoExtractor } from "../../../extractors/index.js";
 
 export const GetEpisodeServers = async (req, res) => {
     const baseUrl = "https://HiAnime.to"
-    const nameServer = ["hd-1", "hd-2", "streamtape"].filter(name => req.query.server === name)?.pop() || false
+    const nameServer = ["hd-1", "hd-2", "streamtape"].find(name => req.query.server === name) || false
     const langServer = ["sub", "dub"].filter(name => req.query.type === name)?.pop() || "sub"
     const { nameID } = req.params;
     const episodeID = req.query.ep
 
     try {
         const response = await axios.get(`${baseUrl}/ajax/v2/episode/servers?episodeId=${episodeID}`);
-        const document = JSON.parse(response.data).html
+        const document = response.data.html
         const $ = load(document);
         const title = nameID.split('-').slice(0, -1).map(palabra => {
             return palabra[0].toUpperCase() + palabra.slice(1);
@@ -38,26 +38,11 @@ export const GetEpisodeServers = async (req, res) => {
             const selectOne = data.sources.filter(name => isEqual(name.server, nameServer))
             const selectTwo = selectOne.filter(name => isEqual(name.type, langServer))
             const winner = selectTwo[0] ? selectTwo[0] : selectOne[0]
-            let link, _extract;
-
-            switch (winner.server) {
-                case "HD-1":
-                case "HD-2":
-                    link = await extractVideoLink(winner.url)
-                    _extract = await rabbitStream(link)
-                    data.url = link
-                    data.sources = _extract.sources
-                    data.subtitles = _extract.subtitles
-                    break;
-                case "StreamTape":
-                    link = await extractVideoLink(winner.url)
-                    _extract = await streamTape(link)
-                    data.url = link
-                    data.sources = _extract.sources
-                    break;
-                default:
-                    data.sources = winner
-            }
+            const link = await extractVideoLink(winner.url)
+            const isExtrac = await videoExtractor(link)
+            data.url = link
+            data.sources = isExtrac.sources
+            data.subtitles = isExtrac.subtitles
         } else {
             console.log(data)
         }
@@ -69,9 +54,8 @@ export const GetEpisodeServers = async (req, res) => {
 };
 
 const extractVideoLink = async (id) => {
-    const response = await axios.get(`https://HiAnime.to/ajax/v2/episode/sources?id=${id}`);
-    const link = JSON.parse(response.data).link;
-    return link
+    const { data } = await axios.get(`https://HiAnime.to/ajax/v2/episode/sources?id=${id}`);
+    return data.link
 }
 
 function isEqual(one = String, two = String){

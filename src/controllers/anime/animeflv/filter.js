@@ -2,7 +2,7 @@ import axios from "axios";
 import { load } from "cheerio";
 
 import { AnimeSearch } from "../../../models/anime.js";
-import { isValidGenre, isValidStatus, isValidType, isValidOrder } from "./_animeflv.js";
+import { isValidGenre, isValidStatus, isValidType, isValidOrder } from "./animeFLV_.js";
 
 export const GetAnimeByFilter = async (req, res) => {
     const baseUrl = "https://animeflv.net"

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { load } from "cheerio";
-import { okru } from "../../../extractors/index.js";
-
+import { videoExtractor } from "../../../extractors/index.js";
+import { AnimeSource } from "../../../models/anime.js";
+import _ from "../../../utils/index.js"
 
 //const nameServer = ["mega", "sw", "yourupload", "okru", "maru", "fembed", "netu", "stape"]
 export const GetEpisodeServers = async (req, res) => {
@@ -9,24 +10,22 @@ export const GetEpisodeServers = async (req, res) => {
 
     const { episodeID } = req.params;
     const nameServer = req.query.server || false
-    const langServer = ["sub", "lat"].filter(name => req.query.type === name).pop() || "sub"
+    const langServer = _.isLangValid(req.query?.type || "sub")
 
     try {
         const response = await axios.get(`${baseUrl}/ver/${episodeID}`);
         const $ = load(response.data);
 
         const getLinks = JSON.parse(response.data.match(/var videos = ({.+?);/)?.[1]);
-        const data = {
-			name: $(".CapiTop").children("h1").text().trim(),
-			url: `/anime/flv/watch/${episodeID}`,
-			number: parseInt(episodeID.split("-").pop()),
-			sources: []
-        };
+        const animeWatch = new AnimeSource();
+        animeWatch.title = $(".CapiTop").children("h1").text().trim();
+        animeWatch.url = response.config.url;
+        animeWatch.number = parseInt(episodeID.split("-").pop());
 
         // obtenemos los links del video
         for (const index in getLinks){
             getLinks[index].map(item => {
-                data.sources.push({
+                animeWatch.add({
                     server: item.title,
                     type: index,
                     url: item.code
@@ -35,30 +34,18 @@ export const GetEpisodeServers = async (req, res) => {
         }
 
         if (nameServer) {
-            const subOrDub = data.sources.filter(item => isEqual(item.type, langServer))
-            const hasServer = subOrDub.filter(item => isEqual(item.server, nameServer))
+            const subOrDub = animeWatch.sources.filter(item => _.isTextEqual(item.type, langServer))
+            const hasServer = subOrDub.filter(item => _.isTextEqual(item.server, nameServer))
             const winner = hasServer.pop() || subOrDub.pop()
-
-            switch (true){
-                case isEqual(winner.server, "okru"):
-                    const extractor = await okru(winner.url)
-                    data.url = winner.url
-                    data.sources = extractor.sources
-                break;
-                default:
-                    data.sources = winner
-            }
+            const isExtrac = await videoExtractor(winner.url)
+            animeWatch.url = winner.url
+            animeWatch.sources = isExtrac.sources
         } else {
 
         }
-        return res.status(200).json(data);
+        return res.status(200).json(animeWatch);
     } catch (error) {
         console.log(error)
         return res.status(500).json("Error " + error.message);
     }
 };
-
-
-function isEqual(one = String, two = String){
-    return one.toLocaleLowerCase() === two.toLocaleLowerCase()
-}
