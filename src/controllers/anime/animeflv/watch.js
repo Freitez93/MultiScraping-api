@@ -1,7 +1,7 @@
 import axios from "axios";
 import { load } from "cheerio";
 import { videoExtractor } from "../../../extractors/index.js";
-import { AnimeSource } from "../../../models/anime.js";
+import { AnimeSources } from "../../../models/anime.js";
 import _ from "../../../utils/index.js"
 
 //const nameServer = ["mega", "sw", "yourupload", "okru", "maru", "fembed", "netu", "stape"]
@@ -17,7 +17,7 @@ export const GetEpisodeServers = async (req, res) => {
         const $ = load(response.data);
 
         const getLinks = JSON.parse(response.data.match(/var videos = ({.+?);/)?.[1]);
-        const animeWatch = new AnimeSource();
+        const animeWatch = new AnimeSources();
         animeWatch.title = $(".CapiTop").children("h1").text().trim();
         animeWatch.url = response.config.url;
         animeWatch.number = parseInt(episodeID.split("-").pop());
@@ -25,7 +25,7 @@ export const GetEpisodeServers = async (req, res) => {
         // obtenemos los links del video
         for (const index in getLinks){
             getLinks[index].map(item => {
-                animeWatch.add({
+                animeWatch.addServer({
                     server: item.title,
                     type: index,
                     url: item.code

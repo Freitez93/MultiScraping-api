@@ -24,21 +24,19 @@ export const GetAnimeByFilter = async (req, res) => {
         })
         const $ = load(response.data);
 
-        const lastPage = $(".page-item a").last().attr("href")?.split("=").pop()
+        const lastPage = $('a[title="Last"]').attr("href")?.split("=").pop()
 		const animeFilter = new AnimeSearch()
-        animeFilter.addNavigate({
-            currentPage: page || 1,
-            hasNextPage: parseInt(lastPage) ? true : false,
-            totalPages: parseInt(lastPage) || 0
-        })
+        animeFilter.currentPage = page || 1
+        animeFilter.hasNextPage = parseInt(page || 1) < parseInt(lastPage)
+        animeFilter.totalPages = parseInt(lastPage)
 
         //Obtenemos los animes
         $("div.film_list-wrap > div").each((_i, e) => {
             const animeID = $(e).find("a").attr("href").split("/").pop()
             animeFilter.addResults({
-                id: `/anime/zoro/info/${animeID}`,
+                id: `${animeID}`,
                 title: $(e).find("a.dynamic-name").text(),
-                url: `${baseUrl}/${animeID}?ref=search`,
+                url: `${baseUrl}/${animeID}`,
                 image: $(e).find("img").attr("data-src"),
                 type: $(e).find("span.fdi-item").first().text()
             })

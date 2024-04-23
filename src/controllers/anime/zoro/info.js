@@ -14,7 +14,7 @@ export const GetAnimeInfo = async (req, res) => {
 
 		// Obtener informacion del anime
 		const animeInfo = new AnimeInfo();
-		animeInfo.title = $("h2.film-name").text().trim();
+		animeInfo.title = $("h2.film-name").text().trim(); 
 		animeInfo.image = $("img.film-poster-img").attr("src");
 		animeInfo.type = $(".tick span.item").first().text();
 		animeInfo.description = $("div.film-description div.text").text().trim();
@@ -22,7 +22,7 @@ export const GetAnimeInfo = async (req, res) => {
 		animeInfo.releaseDate = aniscInfo.Aired;
 		animeInfo.url = response.config.url;
 		animeInfo.status = aniscInfo.Status;
-		animeInfo.otherTitle = aniscInfo.Japanese;
+		animeInfo.otherTitle = $("h2.film-name").attr("data-jname");
 
 		// obtenemos los generos del anime
 		$("div.item.item-list a").each((_i_, e) => {
@@ -39,21 +39,11 @@ export const GetAnimeInfo = async (req, res) => {
 		});
 
 		// obtenemos la lista de episodios
-		const { data } = await axios.get(
-			`${baseUrl}/ajax/v2/episode/list/${nameID.split("-").pop()}`
-		);
-		const $$ = load(data.html);
-		$$("a.ssl-item.ep-item").each((_i_, e) => {
-			animeInfo.episodes.push({
-				id: $$(e).attr("href").replace("/watch/", "/anime/zoro/watch/"),
-				title: $$(e).attr("title"),
-				number: parseInt(_i_) + 1,
-				url: `${baseUrl + $$(e).attr("href")}`,
-			});
-		});
+		const episodes = await getEpisodeList(`${baseUrl}/ajax/v2/episode/list/${nameID.split("-").pop()}`);
+		animeInfo.episodes = episodes;
 
-		// actualizamos tl total de episodios del anime
-		animeInfo.totalEpisodes = animeInfo.episodes.length;
+		// actualizamos el total de episodios del anime
+		animeInfo.totalEpisodes = episodes.length;
 
 		return res.status(200).json(animeInfo);
 	} catch (error) {
@@ -61,6 +51,24 @@ export const GetAnimeInfo = async (req, res) => {
 		return res.status(500).json("Error " + error.message);
 	}
 };
+
+async function getEpisodeList(url) {
+	const { data } = await axios.get(url);
+	const $ = load(data.html);
+
+	const episodeList = []
+	$("a.ssl-item.ep-item").each((_i_, e) => {
+		const JapName = $(e).find("div.ep-name").attr("data-jname")
+		const EngName = $(e).attr("title")
+		episodeList.push({
+			id: $(e).attr("href").replace("/watch/", ""),
+			title: JapName || EngName,
+			url: `https://hianime.to${$(e).attr("href")}`,
+			number: _i_ + 1
+		});
+	});
+	return episodeList
+}
 
 async function _aniscInfo(element) {
 	const $ = load(element);
@@ -70,6 +78,9 @@ async function _aniscInfo(element) {
 		switch (key) {
 			case "Japanese:":
 				result.Japanese = $(e).find("span.name").text();
+				break;
+			case "Synonyms:":
+				result.Synonyms = $(e).find("span.name").text();
 				break;
 			case "Aired:":
 				result.Aired = $(e).find("span.name").text();

@@ -2,7 +2,7 @@ import _ from "../utils/index.js"
 
 export class AnimeSearch {
     /** Número de página donde se encuentra actualmente 
-     * @param Number
+     * @param Number 
     */
     currentPage = 1
 
@@ -16,37 +16,20 @@ export class AnimeSearch {
     */
     totalPages = 100
 
-    /** Resultados de la busqueda de animes
-     * @param Object
-     * 
-    */
+    /**
+     * Resultados de la busqueda de animes
+     * @param {Object} 
+     * @type {any[]}
+     */
     results = []
-
-    constructor(current, hasNext, total) {
-        this.currentPage = current
-        this.hasNextPage = hasNext
-        this.totalPages = total
-    }
-
-    /** addNavigate ingresa un array con los parametros
-     * @param currentPage Número de página donde se encuentra actualmente
-     * @param hasNextPage Indica si hay una página siguiente disponible
-     * @param totalPages Número de páginas disponibles para buscar
-    */
-    addNavigate(pageNav) {
-        this.currentPage = pageNav?.currentPage;
-        this.hasNextPage = pageNav?.hasNextPage;
-        this.totalPages = pageNav?.totalPages;
-    }
-
 
     /** Resultados de la busqueda de animes ingresados en un array
      * { id, title, url, image, type }
-     * @param id: Ruta para ingresar a la info del anime con la API
-     * @param title: Titulo del Anime
-     * @param url: Direccion url del sitio web original
-     * @param image: Direccion url de la imagen de portada o cover
-     * @param type: Tipo de anime eg. TV, Movie, OVA, ONA, Special
+     * @param {String} id: ID unica del anime en el sitio web
+     * @param {String} title: Titulo del Anime
+     * @param {String} url: Direccion url del sitio web original
+     * @param {String} image: Direccion url de la imagen de portada o cover
+     * @param {String} type: Tipo de anime eg. TV, Movie, OVA, ONA, Special
     */
     addResults(anime) {
         const fixType = anime?.type !== "" ? anime.type : undefined
@@ -131,28 +114,28 @@ export class AnimeInfo {
     }
 }
 
-export class AnimeSource {
+export class AnimeSources {
     /** Titulo del episodio o anime actual.
-     * @param title
+     * @param {String} title
      */
     title = undefined
 
     /** Direccion url del sitio web original 
-     * @param url
+     * @param {String} url
      */
     url = undefined
 
     /** Numero del Episodio o anime actual.
-     * @param number
+     * @param {Number} number
      */
     number = undefined
 
     /** Lista de los servidores o link directo al episodio o anime.
-     * @param sources
+     * @param {Object} sources
      */
     sources = []
 
-    add(object) {
+    addServer(object) {
         const subOrDub = _.isLangValid(object?.type) || undefined
         this.sources.push({
             server: object?.server,

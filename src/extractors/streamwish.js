@@ -6,7 +6,7 @@ export const streamWish = async (link) => {
         const { data } = await axios.get(baseUrl.href);
 
         const _evalMatch = data.match(/\(function.+setup.+\)/)?.[0];
-        const unPackagedData = _evalMatch ? eval(data.match(/(eval)(\(f.*?)(\n<\/script>)/s)?.[2]) : data;
+        const unPackagedData = _evalMatch ? eval(data.match(/(eval)(\(f.*?)(\n<\/script>)/)?.[2]) : data;
         const links = unPackagedData.match(/file:\s*"([^"]+)"/);
 
         const sources = [];

@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
 
+//
+import { videoExtractor } from "./extractors/index.js";
+
 
 // Importacion de las runas para los mangas
 import readmRouter from "./routes/manga/readm/index.js"
@@ -23,15 +26,15 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (_req, res) => {
-    res.send({
-        message: "MultiScraping-api está en funcionamiento 🎬🎉🎉",
-        status: "success",
-        code: 200,
-        additional_info: {
-            server: "https://MultiScraping-Api.vercel.app/",
-            github: "https://github.com/Freitez93/MultiScraping-api",
-        },
-    });
+	res.send({
+		message: "MultiScraping-api está en funcionamiento 🎬🎉🎉",
+		status: "success",
+		code: 200,
+		additional_info: {
+			server: "https://MultiScraping-Api.vercel.app/",
+			github: "https://github.com/Freitez93/MultiScraping-api",
+		},
+	});
 });
 
 // Rutas para manga
@@ -43,6 +46,34 @@ app.use("/manga/mangamonks", mangamonksRouter);
 app.use("/anime/flv", animeflvRouter)
 app.use("/anime/zoro", zoroRouter)
 app.use("/anime/tioanime", tioanimeRouter)
+
+
+// Ruta de Extractor
+app.use("/extractor", async (_req, res) => {
+	const link = _req.query.link
+	try {
+		const data = await videoExtractor(link)
+		if (data){
+			const hasSubtitle = data.subtitles.length > 0 ? data.subtitles : undefined
+			res.send({
+				servidor: link,
+				sources: data.sources,
+				subtitles: hasSubtitle,
+			})
+		} else {
+			res.send({
+				message: "Servidor desconocido para la extraccion de video",
+				status: "error",
+				code: 404,
+				additional_info: {
+					servers: "DoodStream, FileMoon, StreamTape, StreamWish, MegaCloud, Okru",
+				},
+			});
+		}
+	} catch (error){
+		res.send(error)
+	}
+})
 
 /**
  * Starts the server and listens on the specified port.
