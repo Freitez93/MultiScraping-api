@@ -1,25 +1,37 @@
 import axios from "axios";
 import { load } from "cheerio";
 
-export const streamTape = async (link) => {
-    const videoUrl = new URL(link);
-    try {
-        const { data } = await axios.get(videoUrl.href);
-        const $ = load(data);
-        const [fh, sh] = $
-            .html()
-            .match(/robotlink'\).innerHTML = (.*)'/)[1]
-            .split("+ ('")
-            .map(str => str.trim());
-        const url = `https:${fh.replace(/\'/g,'')}${sh.substring(3)}`;
-        const result = { sources: [] };
-        result.sources.push({
-            quality: "default",
-            url: url,
-            isM3U8: url.includes(".m3u8"),
-        });
-        return result;
-    } catch (err) {
-        throw new Error(`Failed to retrieve video: ${err.message}`);
-    }
-};
+class StreamTape {
+	baseUrl = "https://streamtape.com";
+	tapeResponse = {
+		server: "StreamTape",
+		url: "",
+		sources: [],
+		subtitles: undefined
+	}
+	async extract(link) {
+		this.baseUrl = new URL(link);
+		this.tapeResponse.url = link.replace("/e/", "/v/");
+
+		try {
+			const { data } = await axios.get(this.baseUrl.href);
+			const $ = load(data);
+			const [fh, sh] = $.html()
+				.match(/robotlink'\).innerHTML = (.*)'/)[1]
+				.split("+ ('")
+				.map(str => str.trim());
+			const url = `https:${fh.replace(/\'/g, '')}${sh.substring(3)}`;
+			this.tapeResponse.sources.push({
+				quality: "default",
+				url: url,
+				isM3U8: url.includes(".m3u8"),
+			});
+			return this.tapeResponse;
+		} catch (error) {
+			console.error(error.message)
+			throw new Error(`No se pudo recuperar el vídeo: ${error.message}`);
+		}
+	}
+}
+
+export default StreamTape

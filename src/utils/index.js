@@ -13,47 +13,63 @@ export default {
 	 * @returns Boolean si son iguales tanto mayusculas y minisculas
 	 */
 	isTextEqual: (one, two) => {
+		//console.log(`[isTextEqual] Comparando: ${one} con ${two}`)
 		return one.toLowerCase() === two.toLowerCase()
 	},
 
 	/**
-	 * Devuelve una subcadena de la cadena dada después de la primera aparición de la palabra especificada.
+	 * Devuelve una subcadena del texto dado después de la primera aparición de la palabra especificada.
 	 * @param {string} cadena - La cadena de entrada.
 	 * @param {string} palabra - La palabra a buscar.
 	 * @return {string} La subcadena después de la primera aparición de la palabra, o una cadena vacía si la palabra no se encuentra.
 	 */
-	substringAfter: (cadena, palabra) => {
-		const indicePalabra = cadena.indexOf(palabra);
+	substringAfter: (str, start) => {
+		const indicePalabra = str.indexOf(start);
 		if (indicePalabra !== -1) {
-			return cadena.substring(indicePalabra + palabra.length);
+			return str.substring(indicePalabra + start.length);
 		} else {
 			return "";
 		}
 	},
 
 	/**
-	 * Devuelve una subcadena de la cadena dada hasta la primera aparición de la palabra especificada.
+	 * Devuelve una subcadena del texto dado hasta la primera aparición de la palabra especificada.
 	 *
 	 * @param {string} cadena - La cadena de entrada.
 	 * @param {string} palabra - La palabra a buscar.
 	 * @return {string} La subcadena antes de la primera aparición de la palabra, o una cadena vacía si no se encuentra la palabra.
 	 */
-	substringBefore: (cadena, palabra) => {
-		const indicePalabra = cadena.indexOf(palabra);
+	substringBefore: (str, end) => {
+		const indicePalabra = str.indexOf(end);
 		if (indicePalabra !== -1) {
-			return cadena.substring(0, indicePalabra);
+			return str.substring(0, indicePalabra);
 		} else {
 			return "";
 		}
 	},
 
-	/**
-	 * Returns true if argument is different from null and undefined
-	 * @param object
-	 * @returns
-	 */
-	isUsableValue: value => {
-		return value != null && value != undefined;
+	substringBetween: (str, start, end) => {
+		if (typeof str !== "string"){
+			throw Error('La cadena de entrada debe ser de tipo string');
+		} else if (typeof start !== "string" && typeof end !== "string"){
+			throw Error('La cadena de start y end deben ser de tipo string');
+		};
+
+		const startIndex = str.indexOf(start) + start.length;
+		const endIndex = str.indexOf(end, startIndex);
+		return str.substring(startIndex, endIndex);
+	},
+
+	isEmpty: value => {
+		if (Array.isArray(value)) {
+			return value.length === 0;
+		} else if (typeof value === 'object' && value !== null) {
+			return Object.keys(value).length === 0;
+		} else if (typeof value === 'string' || typeof value === 'number') {
+			return value === '';
+		} else {
+			return !value;
+		}
 	},
 
 	/**
@@ -73,7 +89,7 @@ export default {
 			const isLang = {
 				"sub": "Subtitulado",
 				"lat": "Latino",
-				"es": "Español",
+				"esp": "Español",
 				"dub": "English"
 			};
 			for (const key of Object.keys(isLang)) {
@@ -82,8 +98,10 @@ export default {
 					return isLang[key];
 				}
 			}
+		} else {
+			throw new Error("El idioma debe ser de tipo string");
 		}
-		return null; // devolvera el mismo valor si no se encuentra en la array
+		return lang; // devolvera el mismo valor si no se encuentra en la array
 	},
 
 	/**

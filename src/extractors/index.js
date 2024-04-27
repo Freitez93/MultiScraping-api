@@ -1,33 +1,51 @@
-import { rabbitStream } from './megacloud.js'
-import { streamTape } from './streamtape.js';
-import { streamWish } from './streamwish.js';
-import { doodStream } from './doodstream.js';
-import { fileMoon } from './filemoon.js';
-import { okru } from './okru.js';
+import RabbitStream from './megacloud.js'
+import StreamTape from './streamtape.js';
+import StreamWish from './streamwish.js';
+import DoodStream from './doodstream.js';
+import FileMoon from './filemoon.js';
+import Okru from './okru.js';
 
 
-export const videoExtractor = link => {
+export const videoExtractor = async link => {
   const baseLink = new URL(link)
 
   switch (baseLink.hostname) {
     case 'megacloud.tv':
     case 'rapid-cloud.co':
-      return rabbitStream(link)
+      const rabbitStream = new RabbitStream().extract(link).then(res => {
+        return res
+      })
+      return rabbitStream
     case 'streamtape.com':
-      return streamTape(link)
+      const streamTape = new StreamTape().extract(link).then(res => {
+        return res
+      })
+      return streamTape
     case 'streamwish.to':
-      return streamWish(link)
+      const streamWish = new StreamWish().extract(link).then(res => {
+        return res
+      })
+      return streamWish
     case 'doodstream.com':
     case 'd0000d.com':
     case 'd000d.com':
-      return doodStream(link)
+      const doodStream = new DoodStream().extract(link).then(res => {
+        return res
+      })
+      return doodStream
     case 'filemoon.sx':
-      return fileMoon(link)
+      const fileMoon = new FileMoon().extract(link).then(res => {
+        return res
+      })
+      return fileMoon
     case 'ok.ru':
-      return okru(link)
+      const okru = new Okru().extract(link).then(res => {
+        return res
+      })
+      return okru
     default:
       console.error('Extractor not found')
       return null
-      //throw new Error('Extractor not found')
+    //throw new Error('Extractor not found')
   }
 }

@@ -16,6 +16,8 @@ import animeflvRouter from "./routes/anime/animeflv/index.js"
 import tioanimeRouter from "./routes/anime/tioanime/index.js"
 import zoroRouter from "./routes/anime/zoro/index.js"
 
+// Importacion de las runas para los movies
+import movieRouter from "./routes/movie/oceanplay/index.js"
 
 config();
 
@@ -47,6 +49,8 @@ app.use("/anime/flv", animeflvRouter)
 app.use("/anime/zoro", zoroRouter)
 app.use("/anime/tioanime", tioanimeRouter)
 
+// Rutas Para Movies
+//app.use("/movie/oceanplay", movieRouter)
 
 // Ruta de Extractor
 app.use("/extractor", async (_req, res) => {
@@ -54,24 +58,18 @@ app.use("/extractor", async (_req, res) => {
 	try {
 		const data = await videoExtractor(link)
 		if (data){
-			const hasSubtitle = data.subtitles.length > 0 ? data.subtitles : undefined
-			res.send({
-				servidor: link,
-				sources: data.sources,
-				subtitles: hasSubtitle,
-			})
-		} else {
-			res.send({
-				message: "Servidor desconocido para la extraccion de video",
-				status: "error",
-				code: 404,
-				additional_info: {
-					servers: "DoodStream, FileMoon, StreamTape, StreamWish, MegaCloud, Okru",
-				},
-			});
+			res.send(data)
 		}
 	} catch (error){
-		res.send(error)
+		console.error(error)
+		res.send({
+			message: error.message,
+			status: error.status,
+			code: error.code,
+			additional_info: {
+				available_servers: "DoodStream, FileMoon, StreamTape, StreamWish, MegaCloud, Okru",
+			},
+		});
 	}
 })
 
