@@ -24,19 +24,18 @@ export const GetAnimeByFilter = async (req, res) => {
 		const lastPage = $('ul.pagination > li > a[rel!="next"]').last().text()
 		animeFilter.addNavigate({
 			currentPage: parseInt(page || 1),
-            hasNextPage: parseInt(page || 1) < parseInt(lastPage),
-            totalPages: parseInt(lastPage)
+						hasNextPage: parseInt(page || 1) < parseInt(lastPage),
+						totalPages: parseInt(lastPage)
 		})
 
 		//Obtenemos los animes
 		$("ul.animes > li").each((_i, ele) => {
-			const animeApi = $(ele).find("a").attr("href").replace("/anime/", "/anime/tioanime/info/")
 			animeFilter.addResults({
-				id: animeApi,
-                title: $(ele).find("h3.title").text().trim(),
-                url: `${baseUrl + $(ele).find("a").attr("href")}`,
-                image: `${baseUrl + $(ele).find("img").attr("src")}`,
-                type: $(ele).find("span.Type").first().text(),
+				id: $(ele).find("a").attr("href").split("/").pop(),
+				title: $(ele).find("h3.title").text().trim(),
+				url: `${baseUrl + $(ele).find("a").attr("href")}`,
+				image: `${baseUrl + $(ele).find("img").attr("src")}`,
+				type: $(ele).find("span.Type").first().text()
 			})
 		});
 

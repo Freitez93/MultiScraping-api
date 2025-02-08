@@ -17,7 +17,7 @@ import tioanimeRouter from "./routes/anime/tioanime/index.js"
 import zoroRouter from "./routes/anime/zoro/index.js"
 
 // Importacion de las runas para los movies
-import movieRouter from "./routes/movie/oceanplay/index.js"
+import movieRouter from "./routes/movie/playdede/index.js"
 
 config();
 
@@ -45,16 +45,17 @@ app.use("/manga/mangafreak", mangafreakRouter);
 app.use("/manga/mangamonks", mangamonksRouter);
 
 // Rutas para anime
-app.use("/anime/flv", animeflvRouter)
+app.use("/anime/animeflv", animeflvRouter)
 app.use("/anime/zoro", zoroRouter)
 app.use("/anime/tioanime", tioanimeRouter)
 
 // Rutas Para Movies
-//app.use("/movie/oceanplay", movieRouter)
+app.use("/movie/playdede", movieRouter)
 
 // Ruta de Extractor
 app.use("/extractor", async (_req, res) => {
 	const link = _req.query.link
+	console.log(link)
 	try {
 		const data = await videoExtractor(link)
 		if (data){

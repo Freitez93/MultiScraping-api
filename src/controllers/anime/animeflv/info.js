@@ -48,7 +48,7 @@ export const GetAnimeInfo = async (req, res) => {
             animeInfo.episodes.push({
                 name: `Episodio ${_i_[0]}`,
                 url: `${baseUrl}/ver/${watchID}`,
-                id: `/anime/flv/watch/${watchID}`,
+                id: `/anime/animeflv/watch/${watchID}`,
             })
         });
         return res.status(200).json(animeInfo);
