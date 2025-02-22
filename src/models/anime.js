@@ -1,4 +1,4 @@
-import _ from "../utils/index.js"
+import _ from "../tools/index.js"
 
 export class AnimeSearch {
     /** Número de página donde se encuentra actualmente 
@@ -10,11 +10,6 @@ export class AnimeSearch {
      * @param Boolean
     */
     hasNextPage = false
-
-    /** Número de páginas disponibles para buscar
-     * @param Number
-    */
-    totalPages = 100
 
     /**
      * Resultados de la busqueda de animes

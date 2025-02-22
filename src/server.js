@@ -1,23 +1,26 @@
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
+import limiter_request from "./config/rateLimit.js";
+import errorHandler from "./config/errorHandler.js";
 import { config } from "dotenv";
 
-//
-import { videoExtractor } from "./extractors/index.js";
 
+// Importacion de las rutas para los mangas
+import readmRouter from "./routes/manga/readm.routes.js";
+import mangafreakRouter from "./routes/manga/mangafreak.routes.js";
+import mangamonksRouter from "./routes/manga/mangamonks.routes.js";
 
-// Importacion de las runas para los mangas
-import readmRouter from "./routes/manga/readm/index.js"
-import mangafreakRouter from "./routes/manga/mangafreak/index.js"
-import mangamonksRouter from "./routes/manga/mangamonks/index.js"
+// Importacion de las rutas para los animes
+import animeflvRouter from "./routes/anime/animeflv.routes.js";
 
-// Importacion de las runas para los animes
-import animeflvRouter from "./routes/anime/animeflv/index.js"
-import tioanimeRouter from "./routes/anime/tioanime/index.js"
-import zoroRouter from "./routes/anime/zoro/index.js"
+// Importacion de las rutas para las Series/Peliculas
+import playdedeRouter from "./routes/movie/playdede.routes.js";
+import pelisplusRouter from "./routes/movie/pelisplus.routes.js";
+import cuevanaRouter from "./routes/movie/cuevana_biz.routes.js";
 
-// Importacion de las runas para los movies
-import movieRouter from "./routes/movie/playdede/index.js"
+// Test
+import { test } from './test.js'
 
 config();
 
@@ -27,6 +30,17 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cors());
 
+// Activamos protección
+app.use(helmet());
+app.use(limiter_request);
+
+// Informacion en consola de cada request
+app.use((req, res, next) => {
+	console.log(`[ ${new Date().toLocaleString()} ] ${req.method} ${req.url}`);
+	next();
+});
+
+// Ruta raíz para la API
 app.get("/", (_req, res) => {
 	res.send({
 		message: "MultiScraping-api está en funcionamiento 🎬🎉🎉",
@@ -39,40 +53,47 @@ app.get("/", (_req, res) => {
 	});
 });
 
-// Rutas para manga
-app.use("/manga/readm", readmRouter);
-app.use("/manga/mangafreak", mangafreakRouter);
-app.use("/manga/mangamonks", mangamonksRouter);
+// Agrupar las importaciones por categoría usando objetos
+const animeRoutes = {
+	animeflv: animeflvRouter
+};
 
-// Rutas para anime
-app.use("/anime/animeflv", animeflvRouter)
-app.use("/anime/zoro", zoroRouter)
-app.use("/anime/tioanime", tioanimeRouter)
+const movieRoutes = {
+	playdede: playdedeRouter,
+	pelisplus: pelisplusRouter,
+	cuevana: cuevanaRouter
+};
 
-// Rutas Para Movies
-app.use("/movie/playdede", movieRouter)
+const mangaRoutes = {
+	readm: readmRouter,
+	mangafreak: mangafreakRouter,
+	mangamonks: mangamonksRouter
+};
 
-// Ruta de Extractor
-app.use("/extractor", async (_req, res) => {
-	const link = _req.query.link
-	console.log(link)
+// Función para registrar rutas dinámicamente
+const registerRoutes = (basePath, routes) => {
+	Object.entries(routes).forEach(([path, router]) => {
+		app.use(`${basePath}/${path}`, router);
+	});
+};
+
+// Registrar rutas de manera más limpia
+registerRoutes('/manga', mangaRoutes);
+registerRoutes('/anime', animeRoutes);
+registerRoutes('/movie', movieRoutes);
+
+// Ruta de test
+app.get('/test', async (req, res) => {
 	try {
-		const data = await videoExtractor(link)
-		if (data){
-			res.send(data)
-		}
-	} catch (error){
-		console.error(error)
-		res.send({
-			message: error.message,
-			status: error.status,
-			code: error.code,
-			additional_info: {
-				available_servers: "DoodStream, FileMoon, StreamTape, StreamWish, MegaCloud, Okru",
-			},
-		});
+		const result = await test();
+		res.send(result);
+	} catch (error) {
+		console.error('Error fetching data:', error);
 	}
-})
+});
+
+// Middleware para manejar errores
+app.use(errorHandler);
 
 /**
  * Starts the server and listens on the specified port.

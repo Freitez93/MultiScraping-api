@@ -1,147 +1,154 @@
-import _ from "../utils/index.js"
+import tools from "../tools/index.js";
 
 export class MovieSearch {
-    /** Número de página donde se encuentra actualmente 
-     * @param Number 
-    */
-    currentPage = 1
+    constructor() {
+        /** Número de página donde se encuentra actualmente 
+         * @type {number}
+        */
+        this.currentPage = 1;
 
-    /** Indica si hay una página siguiente disponible
-     * @param Boolean
-    */
-    hasNextPage = false
+        /** Indica si hay una página siguiente disponible
+         * @type {boolean}
+        */
+        this.hasNextPage = false;
 
-    /** Número de páginas disponibles para buscar
-     * @param Number
-    */
-    totalPages = undefined
+        /** Resultados de la busqueda de animes
+         * @type {any[]}
+        */
+        this.results = [];
+    }
 
-    /**
-     * Resultados de la busqueda de animes
-     * @param {Object} 
-     * @type {any[]}
+    /** Agrega resultados de la búsqueda de animes
+     * @param {Object} movie
      */
-    results = []
-
-    /** Resultados de la busqueda de animes ingresados en un array
-     * { id, title, url, image, type }
-     * @param {String} id: ID unica de la Pelicula/Serie en el sitio web o Tmdb
-     * @param {String} title: Titulo de la Pelicula/Serie
-     * @param {String} url: Direccion url del sitio web original
-     * @param {String} image: Direccion url de la imagen de portada o cover
-     * @param {String} type: Tipo de la Pelicula/Serie eg. TV, Movie, Anime, Dorama etc..
-    */
     addResults(movie) {
-        this.results = this.results.concat({
+        if (!movie || !movie.id || !movie.title || !movie.url || !movie.image) {
+            throw new Error("Invalid movie object");
+        }
+        this.results.push({
             id: movie.id,
             title: movie.title,
             url: movie.url,
             image: movie.image,
-            type: _.isEmpty(movie.type) ? undefined : movie.type
+            type: tools.isEmpty(movie.type) ? undefined : movie.type
         });
     }
 }
 
 export class MovieInfo {
-    /** Titulo de la Pelicula/Serie actual.
-     * @param title
-    */
-    title = undefined
+    constructor() {
+        /** Titulo de la Pelicula/Serie actual.
+         * @type {string}
+        */
+        this.title = "";
 
-    /** Titulos alternativos para la Pelicula/Serie
-     * @param otherTitle
-     */
-    otherTitle = []
+        /** Titulos alternativos para la Pelicula/Serie
+         * @type {string[]}
+         */
+        this.otherTitle = [];
 
-    /** image: URL de la imagen de portada o cover
-     * @param image
-     */
-    image = undefined
+        /** URL de la imagen de portada o cover
+         * @type {string}
+         */
+        this.image = "";
 
-    /** url: Direccion url del sitio web original
-     * @param url
-     */
-    url = undefined
+        /** Direccion url del sitio web original
+         * @type {string}
+         */
+        this.url = "";
 
-    /** type: Tipo de anime eg. TV, Movie, OVA, ONA, Special
-     * @param type
-     */
-    type = undefined
+        /** Tipo de anime eg. TV, Movie, OVA, ONA, Special
+         * @type {string}
+         */
+        this.type = "";
 
-    /** status: Estado actual de la Pelicula/Serie
-     * @param status
-     */
-    status = undefined
+        /** Estado actual de la Pelicula/Serie
+         * @type {string}
+         */
+        this.status = "";
 
-    /** releaseDate: Fecha en la que inicio la Pelicula/Serie
-     * @param releaseDate
-     */
-    releaseDate = undefined
+        /** Fecha en la que inicio la Pelicula/Serie
+         * @type {string}
+         */
+        this.releaseDate = "";
 
-    /** genres: generos de la Pelicula/Serie
-     * @param genres
-     */
-    genres = []
+        /** Generos de la Pelicula/Serie
+         * @type {string[]}
+         */
+        this.genres = [];
 
-    /** description: Descripcion de la Pelicula/Serie
-     * @param description
-     */
-    description = undefined
+        /** Descripcion de la Pelicula/Serie
+         * @type {string}
+         */
+        this.description = "";
 
-    /** totalEpisodes: Total de episodios de la Pelicula/Serie
-     * @param totalEpisodes
-     */
-    totalEpisodes = 1
+        /** Total de episodios de la Pelicula/Serie
+         * @type {number}
+         */
+        this.totalEpisodes = 1;
 
-    /** episodes: Lista de episodios de la Pelicula/Serie
-     * @param episodes
-     */
-    movie = undefined
-
-    /** episodes: Lista de episodios de la Pelicula/Serie
-     * @param seasons
-     */
-    seasons = undefined
-
-    addMovie(movie){
-        if (!this.movie) this.movie = [];
-        this.movie.push(movie);
+        /** Lista de episodios de la Pelicula/Serie
+         * @type {any[]}
+         */
+        this.episodes = [];
     }
 
-    addSeason(season){
-        if (!this.seasons) this.seasons = [];
-        this.seasons.push(season);
+    /** Agrega una película
+     * @param {Object} movie
+     */
+    addMovie(movie) {
+        if (!movie) {
+            throw new Error("Invalid movie object");
+        }
+        this.episodes.push(movie);
+    }
+
+    /** Agrega una temporada
+     * @param {Object} season
+     */
+    addSeason(season) {
+        if (!season) {
+            throw new Error("Invalid season object");
+        }
+        this.episodes.push(season);
     }
 }
 
 export class MovieSources {
-    /** Titulo del episodio o anime actual.
-     * @param {String} title
-     */
-    title = undefined
+    constructor() {
+        /** Titulo del episodio o anime actual.
+         * @type {string}
+         */
+        this.title = "";
 
-    /** Direccion url del sitio web original 
-     * @param {String} url
-     */
-    url = undefined
+        /** Direccion url del sitio web original 
+         * @type {string}
+         */
+        this.url = "";
 
-    /** Numero del Episodio o anime actual.
-     * @param {Number} number
-     */
-    number = undefined
+        /** Numero del Episodio o anime actual.
+         * @type {number}
+         */
+        this.number = 0;
 
-    /** Lista de los servidores o link directo al episodio o anime.
-     * @param {Object} sources
-     */
-    sources = undefined
+        /** Lista de los servidores o link directo al episodio o anime.
+         * @type {any[]}
+         */
+        this.sources = [];
+    }
 
+    /** Agrega un servidor
+     * @param {Object} object
+     */
     addServer(object) {
-        if (!this.sources) this.sources = [];
-        const subOrDub = _.isLangValid(object?.type) || undefined
+        if (!object || !object.server || !object.url) {
+            throw new Error("Invalid server object");
+        }
+        const subOrDub = tools.isLangValid(object?.type) || undefined;
         this.sources.push({
-            server: object?.server,
+            server: object.server,
             type: subOrDub,
             url: object.url
-        })
+        });
     }
 }

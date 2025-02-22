@@ -1,66 +1,71 @@
 import axios from "axios";
-import CryptoJS from "crypto-js";
 import { load } from "cheerio";
-
-import _ from "../utils/index.js"
+import { decryptAESLink } from "../tools/index.js";
 
 class embed69Resolver {
-  // Ejemplo de URL: https://embed69.org/f/tt28093628-1x01
-  baseUrl = "https://embed69.org/f/"; // URL base para la API de Embed69
-  embedResponse = {
-    server: "Embed69",
-    url: undefined,
-    sources: [],
-    subtitles: undefined
-  }
-  async extract(id) {
-    this.embedResponse.url = `${this.baseUrl}${id}`;
-    this.languageFix = {
-      'LAT': 'Latino',
-      'ESP': 'Español',
-      'SUB': 'Subtitulado'
-    }
 
-    try {
-      const { data } = await axios.get(this.embedResponse.url);
-      const $ = load(data);
+	constructor() {
+		this.DOMAIN = 'https://embed69.org'; // URL base para la API de Embed69
+		this.IMDb_ID = ''
+		this.DECRYPT_KEY = 'Ak7qrvvH4WKYxV2OgaeHAEg2a5eh16vE'; // Clave de descifrado para los enlaces
+		this.embedResponse = {
+			server: 'Embed69',
+			status: 'success',
+			url: '',
+			sources: [],
+			subtitles: undefined
+		};
+		this.languageFix = {
+			'LAT': 'Latino',
+			'ESP': 'Español',
+			'SUB': 'Subtitulado'
+		};
+	}
 
-      const script = $("script:contains('function decryptLink(encryptedLink)')").html();
-      if (!script) {
-        this.embedResponse.url = `Error: ${data.error}`;
-        return this.embedResponse;
-      }
-      // Extraer la parte del texto que contiene el array
-      const dataLinkString = script.match(/const dataLink = (\[.*?\];)/s)[1];
+	async getSources(ID, season, episode) {
+		if (ID.startsWith('tt')) {
+			this.IMDb_ID = season && episode 
+				? `${ID}-${season}x${Number(episode) < 10 ? `0${Number(episode)}` : episode}` 
+				: ID;
+		} else {
+			throw new Error("No se pudo obtener el ID de IMDb");
+		}
 
-      // Eliminar el punto y coma final y convertir a objeto
-      const dataLink = JSON.parse(dataLinkString.slice(0, -1));
+		this.embedResponse.url = `${this.DOMAIN}/f/${this.IMDb_ID}`;
+		try {
+			const { data } = await axios.get(this.embedResponse.url);
+			const $ = load(data);
 
-      dataLink.map((link) => {
-        const language = link['video_language'];
-        const sortVideos = link['sortedEmbeds'];
-        const sources = sortVideos.map((video) => {
-          return {
-            server: video['servername'],
-            link: decryptLink(video['link']),
-            language: this.languageFix[language] || 'Unknown',
-            type: video['type']
-          };
-        });
-        this.embedResponse.sources.push(...sources);
-      });
+			const script = $("script:contains('function decryptLink')").html();
+			if (!script) {
+				this.embedResponse.status = "error";
+				return this.embedResponse;
+			}
+			// Extraer la parte del texto que contiene el array
+			const dataLinkString = script.match(/const dataLink = (\[.*?\];)/s)[1];
 
-      return this.embedResponse;
-    } catch (error) {
-      throw new Error(error.message);
-    }
+			// Eliminar el punto y coma final y convertir a objeto
+			const dataLink = JSON.parse(dataLinkString.slice(0, -1));
 
-    function decryptLink(encryptedLink) {
-      const bytes = CryptoJS.AES.decrypt(encryptedLink, 'Ak7qrvvH4WKYxV2OgaeHAEg2a5eh16vE');
-      const decryptedLink = bytes.toString(CryptoJS.enc.Utf8);
-      return decryptedLink;
-    }
-  }
+			dataLink.map((link) => {
+				const language = link['video_language'];
+				const sortVideos = link['sortedEmbeds'];
+				const sources = sortVideos.map((video) => {
+					return {
+						server: video['servername'],
+						link: decryptAESLink(video['link'], this.DECRYPT_KEY),
+						language: this.languageFix[language] || 'Unknown',
+						type: video['type']
+					};
+				});
+				this.embedResponse.sources.push(...sources);
+			});
+
+			return this.embedResponse;
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	}
 }
 
 export default embed69Resolver;
