@@ -14,12 +14,12 @@ router.get("/", (_req, res) => {
 
 // Rutas para la búsqueda y navegación de Peliculas y Series
 router.get("/search", async (req, res, next) => {
-	const { query, genre, type, page } = req.query;
+	const { query, type, genre, year, page } = req.query;
 	const key = req.url;
 
 	try {
 		const movieResponse = await getCachedData(key, () =>
-			GetMovieBySearch(query, type, genre, page)
+			GetMovieBySearch(query, type, genre, year, page)
 		);
 
 		res.status(200).json(movieResponse);

@@ -10,22 +10,20 @@ const BASE_ORIGIN = "https://pelisplushd.bz/";
 /**
  * Busca películas/series según los criterios especificados
  */
-export const GetMovieBySearch = async (query, type, genre, page) => {
+export const GetMovieBySearch = async (query, type, genre, year, page) => {
 
 	const _type = isValidType(type);
 	const _genre = isValidGenre(genre);
+	const _year = Number(year) ? year : false
 
-	let BASE_PATHNAME = '';
-
-	if (query) {
-		BASE_PATHNAME = `search?s=${query}`;
-	} else if (_genre && _type) {
-		BASE_PATHNAME = `generos/${_genre}/${_type}s`;
-	} else if (_genre) {
-		BASE_PATHNAME = `generos/${_genre}`;
-	} else if (_type) {
-		BASE_PATHNAME = _type + 's';
-	}
+	const BASE_PATHNAME = query
+		? `search?s=${query}`
+		: _type && _genre ? `generos/${_genre}/${_type}s`
+		: _type && _year ? `year/${_year}/${_type}`
+		: _genre ? `generos/${_genre}`
+		: _year ? `year/${_year}`
+		: _type ? `${_type}s`
+		: '';
 
 	const searchLink = new URL(BASE_PATHNAME, BASE_ORIGIN).href
 	try {
@@ -49,8 +47,8 @@ export const GetMovieBySearch = async (query, type, genre, page) => {
 			const image = $(element).find('.Posters-img').attr('src');
 			const slug = link.split('/');
 			const format = {
-				pelicula: 'movie', 
-				anime: 'anime' 
+				pelicula: 'movie',
+				anime: 'anime'
 			}[slug[3]] || 'serie';
 
 			// Agregar los datos al array de resultados

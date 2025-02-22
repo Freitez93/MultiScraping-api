@@ -1,7 +1,7 @@
 // Constantes definidas fuera de las funciones para evitar recrearlas en cada llamada
 const GENRE_PELISPLUS = new Set([
     "accion", "animacion", "aventura", "belica", "ciencia-ficcion", "comedia", "crimen",
-    "documental", "drama", "fantasia", "familia", "guerra", "historia", "romance",
+    "documental","dorama", "drama", "fantasia", "familia", "guerra", "historia", "romance",
     "suspense", "terror", "western", "misterio"
 ]);
 
