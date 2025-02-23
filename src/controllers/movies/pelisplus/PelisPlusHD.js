@@ -19,7 +19,7 @@ export const GetMovieBySearch = async (query, type, genre, year, page) => {
 	const BASE_PATHNAME = query
 		? `search?s=${query}`
 		: _type && _genre ? `generos/${_genre}/${_type}s`
-		: _type && _year ? `year/${_year}/${_type}`
+		: _type && _year ? `year/${_year}/${_type}s`
 		: _genre ? `generos/${_genre}`
 		: _year ? `year/${_year}`
 		: _type ? `${_type}s`
