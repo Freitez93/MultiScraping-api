@@ -19,11 +19,11 @@ export const GetMovieBySearch = async (query, type, genre, year, page) => {
 	const BASE_PATHNAME = query
 		? `search?s=${query}`
 		: _type && _genre ? `generos/${_genre}/${_type}s`
-		: _type && _year ? `year/${_year}/${_type}s`
-		: _genre ? `generos/${_genre}`
-		: _year ? `year/${_year}`
-		: _type ? `${_type}s`
-		: 'peliculas';
+			: _type && _year ? `year/${_year}/${_type}s`
+				: _genre ? `generos/${_genre}`
+					: _year ? `year/${_year}`
+						: _type ? `${_type}s`
+							: 'peliculas';
 
 	const searchLink = new URL(BASE_PATHNAME, BASE_ORIGIN).href
 	try {
@@ -104,42 +104,43 @@ export const GetMovieInfo = async (slug, type) => {
 				url: completeUrl
 			});
 		} else {
+			// Objeto para almacenar las temporadas
 			const seasons = {};
-			const arrayEpisodes = $('.tab-content .btn');
+			const episodes = $('.tab-content .btn');
 
-			// Seleccionamos todos los enlaces de los episodios
-			arrayEpisodes.each((index, element) => {
-				const episodeUrl = $(element).attr('href'); // URL del episodio
-				const parts = episodeUrl.split('/');
+			// Iteramos sobre los episodios
+			episodes.each((index, element) => {
+				const url = $(element).attr('href');
+				if (!url) return;
 
-				// Nombre del episodio en formato T1 - E1: Episode 1
-				const seasonNumber = parts[6]; // Número de la temporada
-				const episodeNumber = parts[8]; // Número del episodio
-				const episodeName = `T${seasonNumber} - E${episodeNumber}: Episode ${episodeNumber}`;
+				const parts = url.split('/');
+				const season = parts[6]; // Número de temporada
+				const episode = parts[8]; // Número de episodio
 
-				// Extraemos la información de la temporada y episodio desde el texto del enlace
-				if (seasonNumber && episodeNumber) {
-					// Creamos el id en el formato requerido
-					const endpoint = `/watch?id=${type}|${slug}|${seasonNumber}x${episodeNumber}`;
-					const episode = {  // Creamos el episodio
+				if (season && episode) {
+					const endpoint = `/watch?id=${type}|${slug}|${season}x${episode}`;
+					const episodeName = $(element).text().split(':')[1].trim();
+					const episodeData = {
 						id: endpoint,
-						name: episodeName,
-						url: episodeUrl
+						name: `T${season} - E${episode}: ${episodeName}`,
+						url: url
 					};
 
-					// Inicializamos la temporada si no existe y agregamos el episodio
-					seasons[seasonNumber] = seasons[seasonNumber] || {
-						title: `Temporada ${seasonNumber}`,
-						number: parseInt(seasonNumber),
-						episodes: []
-					};
-					seasons[seasonNumber].episodes.push(episode);
+					// Crear temporada si no existe
+					if (!seasons[season]) {
+						seasons[season] = {
+							title: `Temporada ${season}`,
+							number: parseInt(season),
+							episodes: []
+						};
+					}
+					seasons[season].episodes.push(episodeData);
 				}
 			});
 
-			// Agregamos las temporadas al objeto de la serie
-			movieInfo.totalEpisodes = arrayEpisodes.length;
-			movieInfo.addSeason(Object.values(seasons));
+			// Actualizar movieInfo
+			movieInfo.totalEpisodes = episodes.length;
+			movieInfo.episodes.push(...Object.values(seasons));
 		}
 
 		return movieInfo;
