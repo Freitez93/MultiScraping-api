@@ -23,7 +23,7 @@ export const GetMovieBySearch = async (query, type, genre, year, page) => {
 		: _genre ? `generos/${_genre}`
 		: _year ? `year/${_year}`
 		: _type ? `${_type}s`
-		: '';
+		: 'peliculas';
 
 	const searchLink = new URL(BASE_PATHNAME, BASE_ORIGIN).href
 	try {

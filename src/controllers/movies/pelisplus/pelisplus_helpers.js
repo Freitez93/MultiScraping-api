@@ -20,6 +20,6 @@ export const isValidGenre = genero => GENRE_PELISPLUS.has(genero) ? genero : und
 
 /**
  * @param {string} type 
- * @returns {string} El tipo de Anime si es válido, de lo contrario 'peliculas'
+ * @returns {string} El tipo de Anime si es válido, de lo contrario undefined
  */
-export const isValidType = (type) => TYPE_PELISPLUS[type] || 'pelicula';
+export const isValidType = (type) => TYPE_PELISPLUS[type] || undefined;
