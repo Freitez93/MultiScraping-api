@@ -148,24 +148,20 @@ export const GetEpisodeServers = async (slug, type, season, episode) => {
 		videoData.number = season ? episode : undefined;
 		videoData.source = [];
 
-		const iframeEmbed = []
+		const iLink = $('iframe[class="metaframe rptss"]').attr('src')
+		const iEnum = iLink.includes('/tt') ? 0 : 1
+		const iPost = []
 		$('.navEP2 > li[class]').map((index, elem) => {
-			iframeEmbed.push({
+			iPost.push({
+				action: 'doo_player_ajax',
 				post: $(elem).attr('data-post'),
-				type: $(elem).attr('data-type'),
-				nume: $(elem).attr('data-nume')
+				nume: $(elem).attr('data-nume'),
+				type: $(elem).attr('data-type')
 			});
 		})
-		
+	
 		const BASE_AJAX = 'https://sololatino.net/wp-admin/admin-ajax.php'
-		const params = {
-			action: 'doo_player_ajax',
-			post: iframeEmbed[0].post,
-			nume: iframeEmbed[1]?.nume || iframeEmbed[0].nume,
-			type: iframeEmbed[0].type
-		}
-
-		const { data: ajaxResponse } = await httpRequest(BASE_AJAX, 'POST', params, 'https://sololatino.net/');
+		const { data: ajaxResponse } = await httpRequest(BASE_AJAX, 'POST', iPost[iEnum], 'https://sololatino.net/');
 		const matchUrl = ajaxResponse.match(/https?:\/\/[^\s'"]+/g)[0];
 
 		// Extraer la información de los servidores
