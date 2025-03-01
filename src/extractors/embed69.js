@@ -24,8 +24,8 @@ class embed69Resolver {
 
 	async getSources(ID, season, episode) {
 		if (ID.startsWith('tt')) {
-			this.IMDb_ID = season && episode 
-				? `${ID}-${season}x${Number(episode) < 10 ? `0${Number(episode)}` : episode}` 
+			this.IMDb_ID = season && episode
+				? `${ID}-${season}x${Number(episode) < 10 ? `0${Number(episode)}` : episode}`
 				: ID;
 		} else {
 			throw new Error("No se pudo obtener el ID de IMDb");
@@ -51,12 +51,15 @@ class embed69Resolver {
 				const language = link['video_language'];
 				const sortVideos = link['sortedEmbeds'];
 				const sources = sortVideos.map((video) => {
-					return {
-						server: video['servername'],
-						link: decryptAESLink(video['link'], this.DECRYPT_KEY),
-						language: this.languageFix[language] || 'Unknown',
-						type: video['type']
-					};
+					if (video['servername'] !== 'download') {
+						return {
+							server: video['servername'],
+							link: decryptAESLink(video['link'], this.DECRYPT_KEY),
+							language: this.languageFix[language] || 'Unknown',
+							type: video['type']
+						};
+					}
+
 				});
 				this.embedResponse.sources.push(...sources);
 			});
