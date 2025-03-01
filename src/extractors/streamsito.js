@@ -56,7 +56,8 @@ class StreamsitoResolver {
 					const onclick = $(element).attr('onclick');
 					const videoUrl = tools.substringBetween(onclick, "go_to_playerVast('", "',");
 
-					if (videoUrl.includes("embedsito.net")) return;
+					if (videoUrl.includes('embedsito.net')) return;
+					if (videoUrl.includes('xupalace.org')) return;
 
 					const server = new URL(videoUrl).host.split(".")[0];
 					this.embedResponse.sources.push({

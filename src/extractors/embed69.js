@@ -50,18 +50,15 @@ class embed69Resolver {
 			dataLink.map((link) => {
 				const language = link['video_language'];
 				const sortVideos = link['sortedEmbeds'];
-				const sources = sortVideos.map((video) => {
-					if (video['servername'] !== 'download') {
-						return {
-							server: video['servername'],
-							link: decryptAESLink(video['link'], this.DECRYPT_KEY),
-							language: this.languageFix[language] || 'Unknown',
-							type: video['type']
-						};
-					}
-
+				sortVideos.map(video => {
+					if (video['servername'] === 'download') return;
+					this.embedResponse.sources.push({
+						server: video['servername'],
+						link: decryptAESLink(video['link'], this.DECRYPT_KEY),
+						language: this.languageFix[language] || 'Unknown',
+						type: video['type']
+					});
 				});
-				this.embedResponse.sources.push(...sources);
 			});
 
 			return this.embedResponse;
