@@ -18,6 +18,7 @@ import animeflvRouter from "./routes/anime/animeflv.routes.js";
 import playdedeRouter from "./routes/movie/playdede.routes.js";
 import pelisplusRouter from "./routes/movie/pelisplus.routes.js";
 import cuevanaRouter from "./routes/movie/cuevana_biz.routes.js";
+import sololatinoRouter from "./routes/movie/sololatino.routes.js";
 
 // Test
 import { test } from './test.js'
@@ -59,9 +60,10 @@ const animeRoutes = {
 };
 
 const movieRoutes = {
-	playdede: playdedeRouter,
+	cuevana: cuevanaRouter,
 	pelisplus: pelisplusRouter,
-	cuevana: cuevanaRouter
+	playdede: playdedeRouter,
+	sololatino: sololatinoRouter
 };
 
 const mangaRoutes = {
