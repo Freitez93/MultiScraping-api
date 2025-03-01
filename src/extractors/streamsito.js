@@ -50,7 +50,7 @@ class StreamsitoResolver {
 			};
 
 			for (const [language, elements] of Object.entries(options)) {
-				if (elements.length <= 1) continue;
+				if (elements.length === 0) continue;
 
 				elements.each((_index, element) => {
 					const onclick = $(element).attr('onclick');

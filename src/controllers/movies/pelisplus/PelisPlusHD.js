@@ -183,7 +183,7 @@ export const GetEpisodeServers = async (slug, type, season, episode) => {
 		for (const server of serverNames) {
 			if (server.includes('/tt')) {
 				const Multi_Embed = await embedExtractor(server);
-				videoData.source = Multi_Embed[0].sources; // Asumiendo que Multi_Embed siempre tiene al menos un elemento
+				videoData.source = Multi_Embed.sources;
 			} else {
 				const name = server.includes('waaw') ? 'Netu' : 'UqLoad';
 				videoData.source.push({

@@ -11,9 +11,9 @@ export const getInfoFromID = async (TMDb_ID, TYPE = 'movie', LANGUAGE = 'es-419'
 	try {
 		// Validar tipo
 		if (!['movie', 'tv', 'serie'].includes(TYPE)) {
-			TYPE = (TYPE === 'serie') ? 'tv' : 'movie';
-		} else {
 			throw new Error('Tipo inválido. Usar "movie" o "tv"');
+		} else {
+			TYPE = (TYPE === 'serie') ? 'tv' : TYPE;
 		}
 
 		// Construir URL de la API
