@@ -36,7 +36,7 @@ router.get("/", (_req, res) => {
 // Rutas para la búsqueda y navegación de animes
 router.get("/search", async (req, res, next) => {
 	const { query, genre, status, type, order, page } = req.query;
-	const key = req.url;
+		const key = req.originalUrl;
 
 	try {
 		const animeResponse = await getCachedData(key, () =>
@@ -79,7 +79,7 @@ router.get("/watch", async (req, res, next) => {
 // Rutas especiales para obtener animes populares
 router.get("/popular", async (req, res, next) => {
 	const page = req.query.page || 1;
-	const key = req.url;
+		const key = req.originalUrl;
 
 	try {
 		const animeResponse = await getCachedData(key, () =>
@@ -94,7 +94,7 @@ router.get("/popular", async (req, res, next) => {
 // Rutas especiales para obtener los últimos animes añadidos
 router.get("/latest", async (req, res, next) => {
 	const page = req.query.page || 1;
-	const key = req.url;
+		const key = req.originalUrl;
 
 	try {
 		const animeResponse = await getCachedData(key, () =>

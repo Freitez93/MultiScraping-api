@@ -15,7 +15,7 @@ router.get("/", (_req, res) => {
 // Rutas para la búsqueda y navegación de Peliculas y Series
 router.get("/search", async (req, res, next) => {
 	const { query, type, order, page } = req.query;
-	const key = req.url;
+	const key = req.originalUrl;
 
 	try {
 		const movieResponse = await getCachedData(key, () =>
@@ -33,7 +33,7 @@ router.get("/search", async (req, res, next) => {
 router.get("/info", async (req, res, next) => {
 	const { id } = req.query;
 	const [TMDb_ID, TYPE, SLUG] = id.split('|')
-	const key = req.url;
+	const key = req.originalUrl;
 
 	try {
 		if (!TYPE) throw new Error('ID invalido o mal formateado');
@@ -52,7 +52,7 @@ router.get("/watch", async (req, res, next) => {
 	const { id } = req.query;
 	const [TMDb_ID, SLUG, SERIE] = id.split('|');
 	const [SEASON, EPISODE] = SERIE ? SERIE.split('x') : [false, false];
-	const key = req.url;
+	const key = req.originalUrl;
 
 	try {
 		if (SERIE && (!SEASON || !EPISODE)) {
