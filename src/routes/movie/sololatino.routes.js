@@ -1,6 +1,6 @@
 import express from "express";
 import { getCachedData } from "../../config/node_cache.js";
-import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../controllers/movies/sololatino/SoloLatino.js'
+import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../site/movies/sololatino/SoloLatino.js'
 const router = express.Router();
 
 router.get("/", (_req, res) => {

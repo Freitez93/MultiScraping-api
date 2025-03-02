@@ -1,6 +1,6 @@
 import express from "express";
 import { getCachedData } from "../../config/node_cache.js";
-import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../controllers/movies/pelisplus/PelisPlusHD.js';
+import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../site/movies/pelisplus/PelisPlusHD.js';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import express from "express";
 import { getCachedData } from "../../config/node_cache.js";
-import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../controllers/movies/cuevana/cuevana_biz.js';
+import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../site/movies/cuevana/cuevana_biz.js';
 
 const router = express.Router();
 

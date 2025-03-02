@@ -1,7 +1,5 @@
 import express from "express";
-import {
-	GetMovieBySearch, GetMovieInfo, GetEpisodeServers
-} from '../../controllers/movies/playdede/PlayDede.js';
+import { GetMovieBySearch, GetMovieInfo, GetEpisodeServers } from '../../site/movies/playdede/PlayDede.js';
 
 const router = express.Router();
 

@@ -1,13 +1,13 @@
 import express from "express";
-import { mangamonksHome } from "../../controllers/manga/mangamonks/home.js";
-import { mangamonksInfo } from "../../controllers/manga/mangamonks/info.js";
-import { mangamonksRead } from "../../controllers/manga/mangamonks/read.js";
-import { mangamonksChapters } from "../../controllers/manga/mangamonks/chapters.js";
-import { mangamonksLatestRelease } from "../../controllers/manga/mangamonks/latest-release.js";
-import { mangamonksPopular } from "../../controllers/manga/mangamonks/popular.js";
-import { mangamonksGenre } from "../../controllers/manga/mangamonks/genre.js";
-import { mangamonksCollections } from "../../controllers/manga/mangamonks/collections.js";
-import { mangamonksCollection } from "../../controllers/manga/mangamonks/collection.js";
+import { mangamonksHome } from "../../site/manga/mangamonks/home.js";
+import { mangamonksInfo } from "../../site/manga/mangamonks/info.js";
+import { mangamonksRead } from "../../site/manga/mangamonks/read.js";
+import { mangamonksChapters } from "../../site/manga/mangamonks/chapters.js";
+import { mangamonksLatestRelease } from "../../site/manga/mangamonks/latest-release.js";
+import { mangamonksPopular } from "../../site/manga/mangamonks/popular.js";
+import { mangamonksGenre } from "../../site/manga/mangamonks/genre.js";
+import { mangamonksCollections } from "../../site/manga/mangamonks/collections.js";
+import { mangamonksCollection } from "../../site/manga/mangamonks/collection.js";
 
 const router = express.Router();
 

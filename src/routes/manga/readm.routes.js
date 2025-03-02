@@ -1,14 +1,14 @@
 import express from "express";
-import { readmHome } from "../../controllers/manga/readm/home.js";
-import { readmInfo } from "../../controllers/manga/readm/info.js";
-import { readmChapters } from "../../controllers/manga/readm/chapters.js";
-import { readmRead } from "../../controllers/manga/readm/image.js";
-import { readmPopularManga } from "../../controllers/manga/readm/popular-manga.js";
-import { readmLatestUpdates } from "../../controllers/manga/readm/latest-updates.js";
-import { readmNewManga } from "../../controllers/manga/readm/new-manga.js";
-import { readmCategoryList } from "../../controllers/manga/readm/category-list.js";
-import { readmCategory } from "../../controllers/manga/readm/category.js";
-import { readmSearch } from "../../controllers/manga/readm/search.js";
+import { readmHome } from "../../site/manga/readm/home.js";
+import { readmInfo } from "../../site/manga/readm/info.js";
+import { readmChapters } from "../../site/manga/readm/chapters.js";
+import { readmRead } from "../../site/manga/readm/image.js";
+import { readmPopularManga } from "../../site/manga/readm/popular-manga.js";
+import { readmLatestUpdates } from "../../site/manga/readm/latest-updates.js";
+import { readmNewManga } from "../../site/manga/readm/new-manga.js";
+import { readmCategoryList } from "../../site/manga/readm/category-list.js";
+import { readmCategory } from "../../site/manga/readm/category.js";
+import { readmSearch } from "../../site/manga/readm/search.js";
 
 const router = express.Router();
 

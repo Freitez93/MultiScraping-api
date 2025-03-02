@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getCachedData } from "../../config/node_cache.js";
-import { GetAnimeBySearch, GetAnimeInfo, GetEpisodeServers } from "../../controllers/anime/animeflv/AnimeFLV.js";
+import { GetAnimeBySearch, GetAnimeInfo, GetEpisodeServers } from "../../site/anime/animeflv/AnimeFLV.js";
 
 const router = Router();
 
